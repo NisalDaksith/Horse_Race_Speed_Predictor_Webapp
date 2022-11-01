@@ -3,6 +3,7 @@ import pickle
 import numpy as np
 
 def load_model():
+    
     with open('speed_predictor.pkl', 'rb') as file:
         data = pickle.load(file)
     return data
@@ -19,8 +20,22 @@ def show_predict_page():
     
     horse_type = ("Gelding","Brown","Horse","Mare","Colt","Steed","Mount")
     config = ("A","B","B+2","C","C+3")
-    horse_age = ("2","3","4","5","6","7","8")
-
-    horse_type = st.selectbox("Type of your Horse: ",horse_type)
-    config = st.selectbox("Configuration of the Track: ",config)
-    horse_age = st.selectbox("Age of the Horse: ",)
+    horse_age = (["2","3","4","5","6","7","8"])
+    surface = (["0","1"])
+    
+    horse_type = st.selectbox("Type of your Horse ",horse_type)
+    config = st.selectbox("Configuration of the Track ",config)
+    horse_age = st.selectbox("Age of the Horse ",horse_age)
+    surface = st.selectbox("Type of the Surface( 0 = Dirt , 1 = Turf ) ",surface)
+    horse_weight = st.slider("Weight of the Horse ",0,1200)                #Could be problematic 
+    rider_weight = st.slider("Weight of the Rider ",0,150)                 #Could be problematic
+    
+    ok = st.button("Predict Speed")
+    if ok:
+        X = np.array([[horse_type,config,horse_age,horse_weight,rider_weight,surface]])
+        X[:,0] = htype.transform(X[:,0])
+        X[:,1] = config.transform(X[:,1])
+        X = X.astype(float)
+        
+        horse_speed = linearReg.predict(X)
+        st.subheader(f"The Predicted Speed is ${horse_speed[0]:.4f} meters per second.")
